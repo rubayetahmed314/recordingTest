@@ -8,9 +8,12 @@
 </head>
 <body>
     <button onclick="startRecording()">Start</button>
+    <br>
+    <p id="status"></p>
     <script>
         function startRecording(){
-            console.log("Hello World")
+            console.log("Hello World");
+            document.getElementById("status").innerText='Button Clicked!'
         navigator.mediaDevices.getUserMedia({ audio: true })
       .then(function(stream) {
         console.log('You let me use your mic!')
