@@ -41,6 +41,33 @@ const recordAudio = () =>
           const audioBlob = new Blob(audioChunks);
           const audioUrl = URL.createObjectURL(audioBlob);
           const audio = new Audio(audioUrl);
+
+          const reader = new window.FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onloadend = () => {
+            let base64 = reader.result + '';
+            base64 = base64.split(',')[1];
+            const ab = new ArrayBuffer(base64.length);
+            const buff = new Buffer.from(base64, 'base64');
+            const view = new Uint8Array(ab);
+            for (let i = 0; i < buff.length; ++i) {
+              view[i] = buff[i];
+            }
+            const context = new AudioContext();
+            context.decodeAudioData(ab, (buffer) => {
+            const wavFile = toWav(buffer);
+            const blob = new window.Blob([ new DataView(wavFile) ], {
+              type: 'audio/wav'
+            });
+            const anchor = document.createElement('a');
+            document.body.appendChild(anchor);
+            anchor.style = 'display: none';
+            const url = window.URL.createObjectURL(blob);
+            anchor.href = url;
+            anchor.download = 'audio.wav';
+            anchor.click();
+            window.URL.revokeObjectURL(url);
+          });}
           const play = () => audio.play();
           resolve({ audioBlob, audioUrl, play });
         });
