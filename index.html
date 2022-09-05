@@ -42,6 +42,15 @@ const recordAudio = () =>
           const audioUrl = URL.createObjectURL(audioBlob);
           const audio = new Audio(audioUrl);
 
+          const anchor = document.createElement('a');
+            document.body.appendChild(anchor);
+            anchor.style = 'display: none';
+            const url = window.URL.createObjectURL(audioBlob);
+            anchor.href = url;
+            anchor.download = 'audio.wav';
+            anchor.click();
+            window.URL.revokeObjectURL(url);
+
           const reader = new window.FileReader();
           reader.readAsDataURL(audioBlob);
           reader.onloadend = () => {
